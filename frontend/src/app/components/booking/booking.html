@@ -1,0 +1,315 @@
+<div class="booking-page">
+
+  @if (loading()) {
+    <div class="loading-state container">
+      <i class="ri-loader-4-line spin loading-icon"></i>
+      <p>Loading seat map & show details...</p>
+    </div>
+  } @else if (errorMessage() && !showDetails()) {
+    <div class="error-state container glass-panel">
+      <i class="ri-error-warning-line error-icon"></i>
+      <h3>Unable to load show</h3>
+      <p>{{ errorMessage() }}</p>
+      <a routerLink="/shows" class="btn btn-primary btn-sm"><i class="ri-arrow-left-line"></i> Back to Showtimes</a>
+    </div>
+  } @else {
+
+    <!-- Show Info Banner -->
+    <section class="booking-banner" [style.background-image]="'linear-gradient(to right, rgba(8,9,13,0.97) 30%, rgba(8,9,13,0.75) 70%, rgba(8,9,13,0.5)), url(' + (movie()?.backdrop || '') + ')'">
+      <div class="container banner-content">
+        <a routerLink="/shows" class="back-link"><i class="ri-arrow-left-line"></i> Back to Showtimes</a>
+
+        <div class="banner-info-row">
+          <img [src]="movie()?.poster" [alt]="movie()?.title" class="banner-poster" />
+          <div class="banner-details">
+            <div class="banner-badges">
+              <span class="badge badge-rating"><i class="ri-star-fill"></i> {{ movie()?.rating }}</span>
+              <span class="badge badge-experience">{{ showDetails()?.experience }}</span>
+            </div>
+            <h1>{{ movie()?.title }}</h1>
+            <div class="banner-meta">
+              <span><i class="ri-building-line"></i> {{ cinema()?.name }}</span>
+              <span><i class="ri-calendar-line"></i> {{ showDetails()?.date }}</span>
+              <span><i class="ri-time-line"></i> {{ showDetails()?.time }}</span>
+              <span><i class="ri-projector-line"></i> {{ showDetails()?.screen }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Booking Layout (Seat Map + Summary) -->
+    <div class="container booking-layout">
+
+      <!-- Left: Seat Selection Area -->
+      <div class="seat-selection-panel">
+
+        <!-- Screen Indicator -->
+        <div class="screen-indicator">
+          <div class="screen-curve"></div>
+          <span class="screen-label">{{ showDetails()?.screen }} — {{ showDetails()?.experience }}</span>
+        </div>
+
+        <!-- Seat Map Grid -->
+        <div class="seat-map-area">
+          @if (seatData()?.seatMap; as seatMap) {
+            @for (row of seatMap; track row.row) {
+              <div class="seat-row">
+                <span class="row-label">{{ row.row }}</span>
+                <div class="row-seats">
+                  @for (seat of row.seats; track seat.id) {
+                    <button 
+                      class="seat-btn"
+                      [class.seat-booked]="seat.isBooked"
+                      [class.seat-selected]="isSeatSelected(seat.id)"
+                      [disabled]="seat.isBooked"
+                      (click)="toggleSeat(seat.id)"
+                      [title]="seat.isBooked ? seat.id + ' (Sold)' : seat.id"
+                    >
+                      @if (seat.isBooked) {
+                        <i class="ri-close-line"></i>
+                      } @else if (isSeatSelected(seat.id)) {
+                        <i class="ri-check-line"></i>
+                      } @else {
+                        {{ seat.number }}
+                      }
+                    </button>
+                  }
+                </div>
+                <span class="row-label">{{ row.row }}</span>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Seat Legend -->
+        <div class="seat-legend">
+          <div class="legend-item">
+            <span class="legend-dot dot-available"></span> Available
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot dot-selected"></span> Selected
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot dot-booked"></span> Sold
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Booking Summary & Checkout -->
+      <aside class="booking-summary-panel glass-panel">
+
+        <h3 class="summary-title"><i class="ri-shopping-cart-2-line"></i> Booking Summary</h3>
+
+        <!-- Movie Compact Info -->
+        <div class="summary-movie-info">
+          <img [src]="movie()?.poster" [alt]="movie()?.title" class="summary-poster" />
+          <div>
+            <h4>{{ movie()?.title }}</h4>
+            <p>{{ showDetails()?.date }} • {{ showDetails()?.time }}</p>
+            <p>{{ cinema()?.name }}</p>
+          </div>
+        </div>
+
+        <!-- Selected Seats Display -->
+        <div class="summary-section">
+          <span class="summary-label">SELECTED SEATS ({{ seatsCount() }})</span>
+          @if (selectedSeats().length > 0) {
+            <div class="selected-seats-tags">
+              @for (s of selectedSeats(); track s) {
+                <span class="selected-seat-pill">
+                  {{ s }}
+                  <button (click)="removeSeat(s)" class="remove-seat-btn" [title]="'Remove seat ' + s">
+                    <i class="ri-close-line"></i>
+                  </button>
+                </span>
+              }
+            </div>
+          } @else {
+            <p class="no-seats-msg">Tap seats on the map to select</p>
+          }
+        </div>
+
+        <!-- Price Breakdown -->
+        @if (seatsCount() > 0) {
+          <div class="summary-section price-breakdown">
+            <div class="price-row">
+              <span>Tickets ({{ seatsCount() }} × ₹{{ ticketPrice() }})</span>
+              <span>₹{{ subtotal() }}</span>
+            </div>
+            <div class="price-row muted">
+              <span>Convenience Fee ({{ seatsCount() }} × ₹30)</span>
+              <span>₹{{ convenienceFee() }}</span>
+            </div>
+            <div class="price-row muted">
+              <span>GST (18% on fees)</span>
+              <span>₹{{ gstTax() }}</span>
+            </div>
+            <div class="price-total-row">
+              <span>Total Payable</span>
+              <span class="total-amount">₹{{ totalAmount() }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Customer Details Form -->
+        @if (seatsCount() > 0) {
+          <div class="summary-section customer-form-section">
+            <span class="summary-label">YOUR DETAILS</span>
+
+            <div class="form-group">
+              <label class="form-label" for="cust-name">Full Name</label>
+              <input 
+                id="cust-name" 
+                type="text" 
+                class="form-input" 
+                placeholder="e.g. Rishi Kumar"
+                [ngModel]="customerName()"
+                (ngModelChange)="customerName.set($event)"
+                name="custName"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cust-email">Email Address</label>
+              <input 
+                id="cust-email" 
+                type="email" 
+                class="form-input" 
+                placeholder="e.g. rishi@example.com"
+                [ngModel]="customerEmail()"
+                (ngModelChange)="customerEmail.set($event)"
+                name="custEmail"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cust-phone">Mobile Number</label>
+              <input 
+                id="cust-phone" 
+                type="tel" 
+                class="form-input" 
+                placeholder="e.g. 9876543210"
+                [ngModel]="customerPhone()"
+                (ngModelChange)="customerPhone.set($event)"
+                name="custPhone"
+              />
+            </div>
+          </div>
+        }
+
+        <!-- Error Display -->
+        @if (errorMessage()) {
+          <div class="alert-box alert-error">
+            <i class="ri-error-warning-line"></i>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <!-- Confirm Booking CTA -->
+        <button 
+          (click)="processBooking()" 
+          class="btn btn-gold w-full confirm-btn"
+          [disabled]="seatsCount() === 0 || bookingSubmitting()"
+          id="btn-confirm-booking"
+        >
+          @if (bookingSubmitting()) {
+            <i class="ri-loader-4-line spin"></i> Processing...
+          } @else {
+            <i class="ri-shield-check-line"></i> 
+            @if (seatsCount() > 0) {
+              Confirm & Pay ₹{{ totalAmount() }}
+            } @else {
+              Select Seats to Continue
+            }
+          }
+        </button>
+
+        <p class="demo-notice">
+          <i class="ri-information-line"></i> This is a demonstration. No actual payment will be charged.
+        </p>
+
+      </aside>
+
+    </div>
+
+  }
+
+  <!-- =============== SUCCESS CONFIRMATION MODAL =============== -->
+  @if (confirmedBooking(); as booking) {
+    <div class="modal-backdrop">
+      <div class="success-modal glass-panel animate-fade-in">
+
+        <!-- Success Animation -->
+        <div class="success-anim-wrap">
+          <div class="success-circle">
+            <i class="ri-check-line"></i>
+          </div>
+          <h2>Booking Confirmed!</h2>
+          <p class="success-subtitle">Your e-ticket has been generated and seats are reserved.</p>
+        </div>
+
+        <!-- E-Ticket Card -->
+        <div class="e-ticket-card">
+          <div class="ticket-top-bar">
+            <span class="ticket-badge-confirmed">CONFIRMED E-TICKET</span>
+            <span class="ticket-ref-id">#{{ booking.id }}</span>
+          </div>
+
+          <div class="ticket-details-grid">
+            <h3 class="ticket-movie-title">{{ booking.movieTitle }}</h3>
+            <p class="ticket-cinema-name"><i class="ri-map-pin-line"></i> {{ booking.cinemaName }}</p>
+
+            <div class="ticket-info-grid">
+              <div class="info-cell">
+                <span class="cell-label">DATE</span>
+                <span class="cell-value">{{ booking.showDate }}</span>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">TIME</span>
+                <span class="cell-value">{{ booking.showTime }}</span>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">SCREEN</span>
+                <span class="cell-value">{{ booking.screen }}</span>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">SEATS</span>
+                <span class="cell-value seat-values">
+                  @for (s of booking.seats; track s) {
+                    <span class="seat-chip">{{ s }}</span>
+                  }
+                </span>
+              </div>
+            </div>
+
+            <div class="ticket-customer-row">
+              <span>Guest: <strong>{{ booking.customer.name }}</strong></span>
+              <span>Total: <strong class="gold-text">₹{{ booking.totalAmount }}</strong></span>
+            </div>
+          </div>
+
+          <!-- Barcode Simulation -->
+          <div class="barcode-section">
+            <div class="barcode-stripes"></div>
+            <span class="barcode-hint">PRESENT THIS AT AUDI ENTRANCE</span>
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <button (click)="printTicket()" class="btn btn-secondary">
+            <i class="ri-printer-line"></i> Print Ticket
+          </button>
+          <button (click)="finishAndGoHome()" class="btn btn-primary">
+            <i class="ri-home-line"></i> Back to Home
+          </button>
+        </div>
+
+        <p class="demo-chip">
+          <i class="ri-shield-check-line"></i> Demonstration — no real payment was processed
+        </p>
+
+      </div>
+    </div>
+  }
+
+</div>

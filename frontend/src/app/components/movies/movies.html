@@ -1,0 +1,232 @@
+<div class="movies-page container">
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text">
+      <span class="badge badge-red"><i class="ri-film-line"></i> CATALOG EXPLORER</span>
+      <h1>Explore All Movies</h1>
+      <p>Discover current theatrical blockbusters, upcoming previews, and experience cinema at its finest.</p>
+    </div>
+
+    <!-- Quick Status Tabs -->
+    <div class="status-tabs glass-panel">
+      <button 
+        class="status-tab" 
+        [class.tab-active]="statusFilter() === 'all'" 
+        (click)="statusFilter.set('all')"
+      >
+        All Titles ({{ movies().length }})
+      </button>
+      <button 
+        class="status-tab" 
+        [class.tab-active]="statusFilter() === 'now_showing'" 
+        (click)="statusFilter.set('now_showing')"
+      >
+        Now Showing
+      </button>
+      <button 
+        class="status-tab" 
+        [class.tab-active]="statusFilter() === 'coming_soon'" 
+        (click)="statusFilter.set('coming_soon')"
+      >
+        Coming Soon
+      </button>
+    </div>
+  </header>
+
+  <!-- Filter & Sort Control Bar -->
+  <section class="controls-bar glass-panel">
+    
+    <!-- Search Bar -->
+    <div class="search-box">
+      <i class="ri-search-line"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Search title, cast, director..." 
+        class="search-input"
+        id="movies-search-field"
+      />
+      @if (searchQuery()) {
+        <button (click)="searchQuery.set('')" class="clear-btn">
+          <i class="ri-close-line"></i>
+        </button>
+      }
+    </div>
+
+    <div class="filters-group">
+      <!-- Language Dropdown -->
+      <div class="filter-select-wrap">
+        <label for="lang-select"><i class="ri-translate"></i> Language:</label>
+        <select id="lang-select" [(ngModel)]="selectedLanguage" class="custom-select">
+          @for (lang of languages; track lang) {
+            <option [value]="lang">{{ lang }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Genre Dropdown -->
+      <div class="filter-select-wrap">
+        <label for="genre-select"><i class="ri-price-tag-3-line"></i> Genre:</label>
+        <select id="genre-select" [(ngModel)]="selectedGenre" class="custom-select">
+          @for (g of genres; track g) {
+            <option [value]="g">{{ g }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Sort Dropdown -->
+      <div class="filter-select-wrap">
+        <label for="sort-select"><i class="ri-sort-desc"></i> Sort By:</label>
+        <select id="sort-select" [(ngModel)]="sortBy" class="custom-select">
+          <option value="rating">Highest Rated</option>
+          <option value="release">Release Date</option>
+          <option value="price">Price (Low to High)</option>
+        </select>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Movies Grid -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spin loading-icon"></i>
+      <p>Fetching movies catalog...</p>
+    </div>
+  } @else {
+    @if (filteredMovies().length === 0) {
+      <div class="empty-state glass-panel">
+        <i class="ri-movie-2-line empty-icon"></i>
+        <h3>No movies found</h3>
+        <p>No films match your search criteria. Try modifying your filters or clearing search terms.</p>
+        <button 
+          (click)="statusFilter.set('all'); selectedLanguage.set('All'); selectedGenre.set('All'); searchQuery.set('')" 
+          class="btn btn-secondary btn-sm mt-3"
+        >
+          Reset All Filters
+        </button>
+      </div>
+    } @else {
+      <div class="movies-catalog-grid">
+        @for (m of filteredMovies(); track m.id) {
+          <article class="catalog-card glass-panel" (click)="selectMovie(m)">
+            
+            <div class="poster-wrap">
+              <img [src]="m.poster" [alt]="m.title" loading="lazy" class="poster-img" />
+              
+              <div class="rating-badge">
+                <i class="ri-star-fill"></i> {{ m.rating }}
+              </div>
+
+              @if (m.status === 'coming_soon') {
+                <div class="status-overlay-badge coming-soon-tag">
+                  Coming Soon
+                </div>
+              }
+
+              <div class="card-overlay">
+                @if (m.status === 'now_showing') {
+                  <button (click)="$event.stopPropagation(); bookMovie(m)" class="btn btn-primary btn-sm">
+                    <i class="ri-ticket-2-fill"></i> Book Now
+                  </button>
+                }
+                <button (click)="$event.stopPropagation(); selectMovie(m)" class="btn btn-secondary btn-sm">
+                  <i class="ri-information-line"></i> Synopsis
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="tags-row">
+                <span class="tag-lang">{{ m.language }}</span>
+                <span class="tag-duration"><i class="ri-time-line"></i> {{ m.duration }}m</span>
+                <span class="tag-status" [class.status-live]="m.status === 'now_showing'">
+                  {{ m.status === 'now_showing' ? 'In Theaters' : 'Upcoming' }}
+                </span>
+              </div>
+
+              <h3 class="card-title" [title]="m.title">{{ m.title }}</h3>
+              <p class="card-genres">{{ m.genre.join(', ') }}</p>
+
+              <div class="card-footer">
+                <div>
+                  <span class="price-label">Ticket Price</span>
+                  <div class="price-val">₹{{ m.ticketPrice }}</div>
+                </div>
+
+                @if (m.status === 'now_showing') {
+                  <button (click)="$event.stopPropagation(); bookMovie(m)" class="btn btn-primary btn-sm">
+                    Select Shows
+                  </button>
+                } @else {
+                  <span class="release-note">Release: {{ m.releaseDate }}</span>
+                }
+              </div>
+            </div>
+
+          </article>
+        }
+      </div>
+    }
+  }
+
+  <!-- Movie Preview Modal -->
+  @if (selectedMovie(); as movie) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card movie-modal-card glass-panel animate-fade-in" (click)="$event.stopPropagation()">
+        
+        <div class="modal-movie-banner" [style.background-image]="'linear-gradient(to top, #0f121d 10%, rgba(15,18,29,0.4) 60%, transparent), url(' + movie.backdrop + ')'">
+          <button (click)="closeModal()" class="modal-close-btn float-close">
+            <i class="ri-close-line"></i>
+          </button>
+          
+          <div class="banner-bottom">
+            <span class="badge badge-rating"><i class="ri-star-fill"></i> {{ movie.rating }} / 10</span>
+            <h2>{{ movie.title }}</h2>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-meta-row">
+            <span><i class="ri-time-line"></i> {{ movie.duration }} mins</span>
+            <span><i class="ri-translate-2"></i> {{ movie.language }}</span>
+            <span><i class="ri-calendar-line"></i> Release: {{ movie.releaseDate }}</span>
+            <span class="price-highlight">₹{{ movie.ticketPrice }} per ticket</span>
+          </div>
+
+          <div class="modal-genres">
+            @for (g of movie.genre; track g) {
+              <span class="genre-pill">{{ g }}</span>
+            }
+          </div>
+
+          <div class="modal-section">
+            <h4>Synopsis</h4>
+            <p class="modal-desc">{{ movie.description }}</p>
+          </div>
+
+          <div class="modal-section">
+            <h4>Director & Cast</h4>
+            <p><strong>Director:</strong> {{ movie.director }}</p>
+            <p><strong>Starring:</strong> {{ movie.cast.join(', ') }}</p>
+          </div>
+
+          <div class="modal-actions-bar">
+            @if (movie.status === 'now_showing') {
+              <button (click)="bookMovie(movie)" class="btn btn-primary w-full">
+                <i class="ri-ticket-2-fill"></i> Choose Showtime & Book Seats
+              </button>
+            } @else {
+              <button (click)="closeModal()" class="btn btn-secondary w-full">
+                <i class="ri-notification-3-line"></i> Notify Me When Tickets Open
+              </button>
+            }
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

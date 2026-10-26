@@ -1,0 +1,10 @@
+[
+  {
+    "id": "USR_ADMIN_001",
+    "name": "CineBook Administrator",
+    "email": "admin@cinebook.com",
+    "passwordHash": "$2a$10$DqlMVi.ae8kbNHFuBu57fOeGsFqhZ/F2yhk4GzZ4LxjzvnnFSTp2m",
+    "role": "admin",
+    "createdAt": "2026-10-25T12:00:00.000Z"
+  }
+]

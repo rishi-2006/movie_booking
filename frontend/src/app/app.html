@@ -1,0 +1,315 @@
+<!-- Global CineBook Application Shell -->
+<div class="app-wrapper">
+
+  <!-- Top Announcement Bar -->
+  <aside class="announcement-bar" aria-label="Announcement">
+    <div class="container announcement-content">
+      <span class="announcement-pill"><i class="ri-sparkling-fill"></i> Experience Cinema</span>
+      <p>Now showing in IMAX Laser & Dolby Atmos. Book online with zero cancellation fee!</p>
+      <div class="demo-tag"><i class="ri-shield-check-line"></i> Demonstration Platform</div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="app-header glass-panel">
+    <div class="container nav-container">
+      
+      <!-- Brand Logo -->
+      <a routerLink="/" class="brand-logo" aria-label="CineBook Home">
+        <div class="logo-icon-box">
+          <i class="ri-film-fill logo-icon"></i>
+        </div>
+        <div class="logo-text">
+          <span class="logo-cine">CINE</span><span class="logo-book">BOOK</span>
+          <span class="logo-sub">PREMIUM CINEMAS</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="desktop-nav" aria-label="Main Navigation">
+        <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+          <i class="ri-home-4-line"></i> Home
+        </a>
+        <a routerLink="/movies" routerLinkActive="nav-active" class="nav-item">
+          <i class="ri-movie-2-line"></i> Movies
+        </a>
+        <a routerLink="/cinemas" routerLinkActive="nav-active" class="nav-item">
+          <i class="ri-building-line"></i> Cinemas
+        </a>
+        <a routerLink="/shows" routerLinkActive="nav-active" class="nav-item">
+          <i class="ri-time-line"></i> Showtimes
+        </a>
+      </nav>
+
+      <!-- Nav Actions (City Selector & Ticket Lookup) -->
+      <div class="nav-actions">
+        <!-- City Selector Dropdown -->
+        <div class="city-selector">
+          <i class="ri-map-pin-2-fill city-icon"></i>
+          <select 
+            [ngModel]="selectedCity()" 
+            (ngModelChange)="setCity($event)" 
+            class="city-dropdown"
+            aria-label="Select City"
+          >
+            @for (city of cities; track city) {
+              <option [value]="city">{{ city }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Verify / My Ticket Button -->
+        <button 
+          (click)="openLookupModal()" 
+          class="btn btn-secondary btn-sm lookup-btn"
+          id="btn-verify-ticket"
+          title="Verify your booked e-ticket"
+        >
+          <i class="ri-ticket-2-line"></i>
+          <span>My Tickets</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button 
+          (click)="toggleMobileMenu()" 
+          class="mobile-menu-btn" 
+          aria-label="Toggle mobile menu"
+        >
+          <i [class]="isMobileMenuOpen() ? 'ri-close-line' : 'ri-menu-4-line'"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    @if (isMobileMenuOpen()) {
+      <div class="mobile-drawer animate-fade-in">
+        <a routerLink="/" (click)="toggleMobileMenu()" routerLinkActive="mobile-nav-active" [routerLinkActiveOptions]="{exact: true}" class="mobile-nav-item">
+          <i class="ri-home-4-line"></i> Home
+        </a>
+        <a routerLink="/movies" (click)="toggleMobileMenu()" routerLinkActive="mobile-nav-active" class="mobile-nav-item">
+          <i class="ri-movie-2-line"></i> Movies
+        </a>
+        <a routerLink="/cinemas" (click)="toggleMobileMenu()" routerLinkActive="mobile-nav-active" class="mobile-nav-item">
+          <i class="ri-building-line"></i> Cinemas
+        </a>
+        <a routerLink="/shows" (click)="toggleMobileMenu()" routerLinkActive="mobile-nav-active" class="mobile-nav-item">
+          <i class="ri-time-line"></i> Showtimes
+        </a>
+        <button (click)="openLookupModal(); toggleMobileMenu()" class="btn btn-secondary mobile-lookup-btn">
+          <i class="ri-ticket-2-line"></i> Verify / Find My Ticket
+        </button>
+      </div>
+    }
+  </header>
+
+  <!-- Router Outlet Main Content -->
+  <main class="main-content" id="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Ticket Lookup Modal -->
+  @if (isLookupModalOpen()) {
+    <div class="modal-backdrop" (click)="closeLookupModal()">
+      <div class="modal-card glass-panel animate-fade-in" (click)="$event.stopPropagation()">
+        
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <div class="modal-icon-badge">
+              <i class="ri-ticket-2-fill"></i>
+            </div>
+            <div>
+              <h3>Retrieve & Verify Ticket</h3>
+              <p class="modal-sub">Enter your Booking ID and email used during reservation</p>
+            </div>
+          </div>
+          <button (click)="closeLookupModal()" class="modal-close-btn" aria-label="Close modal">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          @if (!lookedUpBooking()) {
+            <form (ngSubmit)="searchBooking()" class="lookup-form">
+              <div class="form-group">
+                <label class="form-label" for="lookupId">Booking Reference ID</label>
+                <div class="input-with-icon">
+                  <i class="ri-hashtag"></i>
+                  <input 
+                    id="lookupId" 
+                    type="text" 
+                    class="form-input" 
+                    placeholder="e.g. CB202610264789"
+                    [ngModel]="lookupBookingId()"
+                    (ngModelChange)="lookupBookingId.set($event)"
+                    name="bookingId"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="lookupEmail">Registered Email</label>
+                <div class="input-with-icon">
+                  <i class="ri-mail-line"></i>
+                  <input 
+                    id="lookupEmail" 
+                    type="email" 
+                    class="form-input" 
+                    placeholder="e.g. name@example.com"
+                    [ngModel]="lookupEmail()"
+                    (ngModelChange)="lookupEmail.set($event)"
+                    name="email"
+                    required
+                  />
+                </div>
+              </div>
+
+              @if (lookupError()) {
+                <div class="alert-box alert-error">
+                  <i class="ri-error-warning-line"></i>
+                  <span>{{ lookupError() }}</span>
+                </div>
+              }
+
+              <button 
+                type="submit" 
+                class="btn btn-primary w-full" 
+                [disabled]="lookupLoading()"
+                id="btn-search-ticket"
+              >
+                @if (lookupLoading()) {
+                  <i class="ri-loader-4-line spin"></i> Verifying...
+                } @else {
+                  <i class="ri-search-eye-line"></i> Find My Ticket
+                }
+              </button>
+            </form>
+          } @else {
+            <!-- Display verified booking e-ticket card -->
+            <div class="ticket-card animate-fade-in">
+              <div class="ticket-top">
+                <div class="ticket-badge">CONFIRMED E-TICKET</div>
+                <div class="ticket-ref">#{{ lookedUpBooking()?.id }}</div>
+              </div>
+
+              <div class="ticket-details">
+                <h4 class="ticket-movie">{{ lookedUpBooking()?.movieTitle }}</h4>
+                <p class="ticket-cinema"><i class="ri-map-pin-line"></i> {{ lookedUpBooking()?.cinemaName }}</p>
+                
+                <div class="ticket-grid">
+                  <div class="ticket-meta-item">
+                    <span class="meta-label">DATE</span>
+                    <span class="meta-value">{{ lookedUpBooking()?.showDate }}</span>
+                  </div>
+                  <div class="ticket-meta-item">
+                    <span class="meta-label">TIME</span>
+                    <span class="meta-value">{{ lookedUpBooking()?.showTime }}</span>
+                  </div>
+                  <div class="ticket-meta-item">
+                    <span class="meta-label">AUDI / SCREEN</span>
+                    <span class="meta-value">{{ lookedUpBooking()?.screen }}</span>
+                  </div>
+                  <div class="ticket-meta-item">
+                    <span class="meta-label">SEATS ({{ lookedUpBooking()?.seats?.length }})</span>
+                    <span class="meta-value seat-tags">
+                      @for (s of lookedUpBooking()?.seats; track s) {
+                        <span class="seat-pill">{{ s }}</span>
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                <div class="ticket-customer">
+                  <span>Guest: <strong>{{ lookedUpBooking()?.customer?.name }}</strong></span>
+                  <span>Total Paid: <strong>₹{{ lookedUpBooking()?.totalAmount }}</strong></span>
+                </div>
+              </div>
+
+              <!-- Barcode / QR Simulation -->
+              <div class="ticket-barcode">
+                <div class="barcode-lines"></div>
+                <div class="barcode-number">SCAN AT TURNSTILE / AUDI ENTRANCE</div>
+              </div>
+
+              <div class="ticket-actions">
+                <button (click)="lookedUpBooking.set(null)" class="btn btn-secondary btn-sm">
+                  <i class="ri-arrow-left-line"></i> Search Another
+                </button>
+                <button (click)="closeLookupModal()" class="btn btn-primary btn-sm">
+                  <i class="ri-check-line"></i> Done
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="container footer-content">
+      
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <div class="logo-icon-box">
+            <i class="ri-film-fill logo-icon"></i>
+          </div>
+          <div class="logo-text">
+            <span class="logo-cine">CINE</span><span class="logo-book">BOOK</span>
+            <span class="logo-sub">PREMIUM CINEMAS</span>
+          </div>
+        </div>
+        <p class="footer-desc">
+          Experience world-class cinema with IMAX Laser, Dolby Atmos 7.1, 4DX motion seats, and contactless verified e-ticketing.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-btn" aria-label="Twitter"><i class="ri-twitter-x-line"></i></a>
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><i class="ri-youtube-line"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Cinemas</h4>
+        <ul>
+          <li><a routerLink="/cinemas">Banjara Hills IMAX</a></li>
+          <li><a routerLink="/cinemas">Hitec City Luxe</a></li>
+          <li><a routerLink="/cinemas">Koramangala Arena</a></li>
+          <li><a routerLink="/cinemas">Bandra West Royale</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Experiences</h4>
+        <ul>
+          <li><a routerLink="/shows">IMAX Laser 2D/3D</a></li>
+          <li><a routerLink="/shows">Dolby Atmos Sound</a></li>
+          <li><a routerLink="/shows">4DX Dynamic Motion</a></li>
+          <li><a routerLink="/shows">VIP Luxury Recliners</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-group">
+        <h4>Support & Safety</h4>
+        <ul>
+          <li><button (click)="openLookupModal()" class="footer-link-btn">Check E-Ticket</button></li>
+          <li><a href="#disclaimer">Zero Cancellation Policy</a></li>
+          <li><a href="#terms">Terms & Conditions</a></li>
+          <li><a href="#privacy">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 CineBook Entertainment Ltd. All rights reserved.</p>
+      <div class="disclaimer-chip">
+        <i class="ri-information-line"></i> Demonstration Platform with Mock Transactions
+      </div>
+    </div>
+  </footer>
+
+</div>

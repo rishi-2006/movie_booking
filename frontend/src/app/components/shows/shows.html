@@ -1,0 +1,155 @@
+<div class="shows-page container">
+
+  <!-- Header Banner (Dynamic if single movie is focused) -->
+  @if (focusedMovie(); as movie) {
+    <div class="movie-focus-banner glass-panel">
+      <img [src]="movie.poster" [alt]="movie.title" class="focus-poster" />
+      <div class="focus-details">
+        <div class="focus-badges">
+          <span class="badge badge-rating"><i class="ri-star-fill"></i> {{ movie.rating }}</span>
+          <span class="badge badge-experience">{{ movie.language }}</span>
+        </div>
+        <h2>{{ movie.title }}</h2>
+        <p class="focus-meta">
+          <span><i class="ri-time-line"></i> {{ movie.duration }} min</span> • 
+          <span>{{ movie.genre.join(', ') }}</span> • 
+          <span>Directed by {{ movie.director }}</span>
+        </p>
+        <p class="focus-desc">{{ movie.description }}</p>
+      </div>
+      <button (click)="selectedMovieId.set('all')" class="clear-focus-btn" title="View all movies showtimes">
+        <i class="ri-close-line"></i> View All Movies
+      </button>
+    </div>
+  } @else {
+    <header class="page-header">
+      <div class="header-text">
+        <span class="badge badge-red"><i class="ri-time-line"></i> SHOWTIMES TIMETABLE</span>
+        <h1>Select Theater & Show</h1>
+        <p>Choose your preferred cinema hall, screen experience (IMAX / Dolby Atmos), and showtime.</p>
+      </div>
+    </header>
+  }
+
+  <!-- Date Selection Tabs -->
+  <section class="date-tabs-bar">
+    <div class="date-tabs-scroll">
+      @for (d of availableDates; track d.date) {
+        <button 
+          class="date-tab glass-panel"
+          [class.date-active]="selectedDate() === d.date"
+          (click)="selectedDate.set(d.date)"
+        >
+          <span class="date-label">{{ d.label }}</span>
+          <span class="date-sub">{{ d.day }}</span>
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Filter Strip -->
+  <section class="shows-filter-strip glass-panel">
+    
+    <!-- Movie Selector -->
+    <div class="filter-item">
+      <label for="show-movie-select"><i class="ri-movie-2-line"></i> Movie:</label>
+      <select id="show-movie-select" [(ngModel)]="selectedMovieId" class="filter-select">
+        <option value="all">All Movies ({{ movies().length }})</option>
+        @for (m of movies(); track m.id) {
+          <option [value]="m.id">{{ m.title }} ({{ m.language }})</option>
+        }
+      </select>
+    </div>
+
+    <!-- Cinema Selector -->
+    <div class="filter-item">
+      <label for="show-cinema-select"><i class="ri-building-line"></i> Theater:</label>
+      <select id="show-cinema-select" [(ngModel)]="selectedCinemaId" class="filter-select">
+        <option value="all">All Cinemas ({{ cinemas().length }})</option>
+        @for (c of cinemas(); track c.id) {
+          <option [value]="c.id">{{ c.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Experience Format -->
+    <div class="filter-item">
+      <label for="show-exp-select"><i class="ri-tv-line"></i> Format:</label>
+      <select id="show-exp-select" [(ngModel)]="selectedExperience" class="filter-select">
+        <option value="all">All Experiences</option>
+        <option value="imax">IMAX Laser</option>
+        <option value="dolby">Dolby Atmos</option>
+        <option value="luxe">Luxe 4K</option>
+      </select>
+    </div>
+
+  </section>
+
+  <!-- Shows Schedule List Grouped by Cinema -->
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spin loading-icon"></i>
+      <p>Loading show schedules...</p>
+    </div>
+  } @else {
+    @if (cinemaGroups().length === 0) {
+      <div class="empty-state glass-panel">
+        <i class="ri-calendar-close-line empty-icon"></i>
+        <h3>No showtimes available</h3>
+        <p>No screenings match your current date and theater filters. Please select a different date or movie.</p>
+        <button 
+          (click)="selectedMovieId.set('all'); selectedCinemaId.set('all'); selectedDate.set('2026-10-26')" 
+          class="btn btn-secondary btn-sm mt-3"
+        >
+          Reset Show Filters
+        </button>
+      </div>
+    } @else {
+      <div class="cinema-groups-list">
+        @for (group of cinemaGroups(); track group.cinema.id) {
+          <div class="cinema-schedule-card glass-panel">
+            
+            <div class="cinema-card-head">
+              <div>
+                <h3 class="cinema-title">{{ group.cinema.name }}</h3>
+                <p class="cinema-loc"><i class="ri-map-pin-line"></i> {{ group.cinema.location }}</p>
+              </div>
+              <div class="cinema-amenity-tags">
+                @for (facility of group.cinema.facilities.slice(0, 3); track facility) {
+                  <span class="mini-tag">{{ facility }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="showtimes-wrap">
+              @for (show of group.shows; track show.id) {
+                <div class="show-slot-card" (click)="goToBooking(show)">
+                  
+                  <div class="slot-time">{{ show.time }}</div>
+                  
+                  <div class="slot-screen-info">
+                    <span class="slot-exp">{{ show.experience }}</span>
+                    <span class="slot-screen">{{ show.screen }}</span>
+                  </div>
+
+                  <div class="slot-footer">
+                    <span class="slot-price">₹{{ show.ticketPrice }}</span>
+                    
+                    @if (getSeatsAvailable(show) < 10) {
+                      <span class="seat-avail-tag filling-fast">Filling Fast</span>
+                    } @else {
+                      <span class="seat-avail-tag available">{{ getSeatsAvailable(show) }} Seats Left</span>
+                    }
+                  </div>
+
+                </div>
+              }
+            </div>
+
+          </div>
+        }
+      </div>
+    }
+  }
+
+</div>

@@ -1,0 +1,95 @@
+<div class="cinemas-page container">
+
+  <header class="page-header">
+    <div class="header-text">
+      <span class="badge badge-experience"><i class="ri-building-line"></i> LUXURY MULTIPLEXES</span>
+      <h1>Our Theaters & Screens</h1>
+      <p>Discover state-of-the-art auditoriums equipped with IMAX Laser, Dolby Atmos 7.1, and VIP plush recliners.</p>
+    </div>
+
+    <!-- City Filter Pills -->
+    <div class="city-pills glass-panel">
+      @for (city of cities(); track city) {
+        <button 
+          class="city-pill" 
+          [class.pill-active]="selectedCity() === city"
+          (click)="selectedCity.set(city)"
+        >
+          {{ city }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Search Filter -->
+  <div class="search-strip glass-panel">
+    <i class="ri-search-line"></i>
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery" 
+      placeholder="Search theater by name, locality, or facility (e.g. IMAX, Atmos)..." 
+      class="search-field"
+      id="cinemas-search-input"
+    />
+    @if (searchQuery()) {
+      <button (click)="searchQuery.set('')" class="clear-btn">
+        <i class="ri-close-line"></i>
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <i class="ri-loader-4-line spin loading-icon"></i>
+      <p>Loading cinema theaters...</p>
+    </div>
+  } @else {
+    @if (filteredCinemas().length === 0) {
+      <div class="empty-state glass-panel">
+        <i class="ri-building-line empty-icon"></i>
+        <h3>No theaters found</h3>
+        <p>Try searching for a different city or location.</p>
+      </div>
+    } @else {
+      <div class="cinemas-grid">
+        @for (c of filteredCinemas(); track c.id) {
+          <article class="cinema-card glass-panel">
+            
+            <div class="card-header">
+              <div class="cinema-badge">
+                <i class="ri-projector-line"></i> {{ c.screens }} Screens
+              </div>
+              <span class="city-tag"><i class="ri-map-pin-2-line"></i> {{ c.city }}</span>
+            </div>
+
+            <div class="card-content">
+              <h3 class="cinema-name">{{ c.name }}</h3>
+              <p class="cinema-address">
+                <i class="ri-direction-line"></i> {{ c.location }}
+              </p>
+
+              <div class="amenities-section">
+                <span class="amenity-label">EXPERIENCES & AMENITIES</span>
+                <div class="facilities-wrap">
+                  @for (f of c.facilities; track f) {
+                    <span class="facility-pill">
+                      <i class="ri-check-line"></i> {{ f }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button (click)="viewCinemaShows(c)" class="btn btn-primary w-full">
+                <i class="ri-calendar-event-line"></i> View Showtimes
+              </button>
+            </div>
+
+          </article>
+        }
+      </div>
+    }
+  }
+
+</div>

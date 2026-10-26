@@ -1,0 +1,372 @@
+[
+  {
+    "id": "SHW001",
+    "movieId": "MOV001",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "10:30 AM",
+    "screen": "Audi 1 (IMAX)",
+    "experience": "IMAX Laser 2D",
+    "ticketPrice": 280,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "A3",
+      "A4",
+      "C5",
+      "D2",
+      "D3",
+      "A1",
+      "A2"
+    ]
+  },
+  {
+    "id": "SHW002",
+    "movieId": "MOV001",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "02:15 PM",
+    "screen": "Audi 1 (IMAX)",
+    "experience": "IMAX Laser 2D",
+    "ticketPrice": 280,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "B1",
+      "B2"
+    ]
+  },
+  {
+    "id": "SHW003",
+    "movieId": "MOV001",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "06:45 PM",
+    "screen": "Audi 1 (IMAX)",
+    "experience": "IMAX Laser 2D",
+    "ticketPrice": 300,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "E4",
+      "E5"
+    ]
+  },
+  {
+    "id": "SHW004",
+    "movieId": "MOV001",
+    "cinemaId": "CIN001",
+    "date": "2026-10-27",
+    "time": "11:00 AM",
+    "screen": "Audi 1 (IMAX)",
+    "experience": "IMAX Laser 2D",
+    "ticketPrice": 280,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "A1",
+      "A2"
+    ]
+  },
+  {
+    "id": "SHW005",
+    "movieId": "MOV001",
+    "cinemaId": "CIN002",
+    "date": "2026-10-26",
+    "time": "01:30 PM",
+    "screen": "Screen 3 (Luxe)",
+    "experience": "4K Atmos",
+    "ticketPrice": 260,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "F3",
+      "F4"
+    ]
+  },
+  {
+    "id": "SHW006",
+    "movieId": "MOV001",
+    "cinemaId": "CIN002",
+    "date": "2026-10-26",
+    "time": "08:00 PM",
+    "screen": "Screen 3 (Luxe)",
+    "experience": "4K Atmos",
+    "ticketPrice": 280,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": []
+  },
+  {
+    "id": "SHW007",
+    "movieId": "MOV002",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "03:00 PM",
+    "screen": "Audi 2 (4DX)",
+    "experience": "4DX 3D",
+    "ticketPrice": 320,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "B4",
+      "B5",
+      "E1",
+      "E2"
+    ]
+  },
+  {
+    "id": "SHW008",
+    "movieId": "MOV002",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "09:30 PM",
+    "screen": "Audi 2 (4DX)",
+    "experience": "4DX 3D",
+    "ticketPrice": 320,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "A5",
+      "A6"
+    ]
+  },
+  {
+    "id": "SHW009",
+    "movieId": "MOV002",
+    "cinemaId": "CIN004",
+    "date": "2026-10-26",
+    "time": "06:00 PM",
+    "screen": "Audi 1",
+    "experience": "Dolby Atmos",
+    "ticketPrice": 290,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "C1",
+      "C2"
+    ]
+  },
+  {
+    "id": "SHW010",
+    "movieId": "MOV003",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "11:15 AM",
+    "screen": "Audi 3",
+    "experience": "Dolby Atmos 7.1",
+    "ticketPrice": 250,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "D4",
+      "D5",
+      "D6"
+    ]
+  },
+  {
+    "id": "SHW011",
+    "movieId": "MOV003",
+    "cinemaId": "CIN003",
+    "date": "2026-10-26",
+    "time": "02:30 PM",
+    "screen": "Main Screen",
+    "experience": "Barco 4K",
+    "ticketPrice": 230,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": []
+  },
+  {
+    "id": "SHW012",
+    "movieId": "MOV004",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "01:00 PM",
+    "screen": "Audi 4",
+    "experience": "4K Atmos",
+    "ticketPrice": 300,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "B3",
+      "B4"
+    ]
+  },
+  {
+    "id": "SHW013",
+    "movieId": "MOV004",
+    "cinemaId": "CIN002",
+    "date": "2026-10-26",
+    "time": "07:15 PM",
+    "screen": "Screen 1",
+    "experience": "Laser Atmos",
+    "ticketPrice": 300,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "E5",
+      "E6"
+    ]
+  },
+  {
+    "id": "SHW014",
+    "movieId": "MOV005",
+    "cinemaId": "CIN005",
+    "date": "2026-10-26",
+    "time": "05:00 PM",
+    "screen": "IMAX Screen",
+    "experience": "IMAX 2D",
+    "ticketPrice": 260,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": []
+  },
+  {
+    "id": "SHW015",
+    "movieId": "MOV006",
+    "cinemaId": "CIN006",
+    "date": "2026-10-26",
+    "time": "08:30 PM",
+    "screen": "Audi 2",
+    "experience": "Dolby Atmos",
+    "ticketPrice": 240,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "C4"
+    ]
+  },
+  {
+    "id": "SHW016",
+    "movieId": "MOV010",
+    "cinemaId": "CIN001",
+    "date": "2026-10-26",
+    "time": "04:45 PM",
+    "screen": "Audi 2",
+    "experience": "Dolby Atmos",
+    "ticketPrice": 270,
+    "rows": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "seatsPerRow": 8,
+    "bookedSeats": [
+      "A7",
+      "A8"
+    ]
+  }
+]

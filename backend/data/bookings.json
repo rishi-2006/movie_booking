@@ -1,0 +1,105 @@
+[
+  {
+    "bookingId": "CB202610268284",
+    "showId": "SHW001",
+    "movieId": "MOV001",
+    "movieTitle": "Interstellar: Beyond Time",
+    "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80",
+    "cinemaId": "CIN001",
+    "cinemaName": "CineBook IMAX & 4DX — Banjara Hills",
+    "city": "Hyderabad",
+    "location": "Road No. 2, Banjara Hills, Hyderabad, Telangana",
+    "date": "2026-10-26",
+    "time": "10:30 AM",
+    "screen": "Audi 1 (IMAX)",
+    "experience": "IMAX Laser 2D",
+    "seats": [
+      "A1",
+      "A2"
+    ],
+    "ticketPrice": 280,
+    "totalAmount": 560,
+    "status": "confirmed",
+    "customer": {
+      "name": "Rishikesh Pendyala",
+      "email": "rishi18102006@gmail.com",
+      "phone": "997452123321"
+    },
+    "paymentNote": "Demonstration booking: no real payment was processed",
+    "createdAt": "2026-10-26T10:43:54.191Z"
+  },
+  {
+    "bookingId": "CB20261026001",
+    "showId": "SHW001",
+    "movieId": "MOV001",
+    "movieTitle": "Interstellar: Beyond Time",
+    "cinemaId": "CIN001",
+    "cinemaName": "CineBook IMAX & 4DX — Banjara Hills",
+    "city": "Hyderabad",
+    "date": "2026-10-26",
+    "time": "10:30 AM",
+    "screen": "Audi 1 (IMAX)",
+    "seats": [
+      "A3",
+      "A4"
+    ],
+    "ticketPrice": 280,
+    "totalAmount": 560,
+    "status": "confirmed",
+    "customer": {
+      "name": "Rishi Kumar",
+      "email": "rishi@example.com",
+      "phone": "9876543210"
+    },
+    "createdAt": "2026-10-25T14:30:00.000Z"
+  },
+  {
+    "bookingId": "CB20261026002",
+    "showId": "SHW001",
+    "movieId": "MOV001",
+    "movieTitle": "Interstellar: Beyond Time",
+    "cinemaId": "CIN001",
+    "cinemaName": "CineBook IMAX & 4DX — Banjara Hills",
+    "city": "Hyderabad",
+    "date": "2026-10-26",
+    "time": "10:30 AM",
+    "screen": "Audi 1 (IMAX)",
+    "seats": [
+      "C5"
+    ],
+    "ticketPrice": 280,
+    "totalAmount": 280,
+    "status": "confirmed",
+    "customer": {
+      "name": "Aarav Sharma",
+      "email": "aarav@example.com",
+      "phone": "9123456789"
+    },
+    "createdAt": "2026-10-25T16:15:00.000Z"
+  },
+  {
+    "bookingId": "CB20261026003",
+    "showId": "SHW007",
+    "movieId": "MOV002",
+    "movieTitle": "Dune: Prophecy of Arrakis",
+    "cinemaId": "CIN001",
+    "cinemaName": "CineBook IMAX & 4DX — Banjara Hills",
+    "city": "Hyderabad",
+    "date": "2026-10-26",
+    "time": "03:00 PM",
+    "screen": "Audi 2 (4DX)",
+    "seats": [
+      "B4",
+      "B5"
+    ],
+    "ticketPrice": 320,
+    "totalAmount": 640,
+    "status": "confirmed",
+    "customer": {
+      "name": "Priya Reddy",
+      "email": "priya@example.com",
+      "phone": "9848012345"
+    },
+    "createdAt": "2026-10-26T08:00:00.000Z"
+  }
+]

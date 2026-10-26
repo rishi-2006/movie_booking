@@ -1,0 +1,308 @@
+<div class="home-page">
+
+  <!-- ================= HERO SPOTLIGHT ================= -->
+  @if (heroMovie(); as movie) {
+    <section class="hero-section" [style.background-image]="'linear-gradient(to right, rgba(8, 9, 13, 0.95) 20%, rgba(8, 9, 13, 0.7) 60%, rgba(8, 9, 13, 0.4) 100%), linear-gradient(to top, rgba(8, 9, 13, 1) 0%, transparent 50%), url(' + movie.backdrop + ')'">
+      <div class="container hero-container">
+        
+        <div class="hero-content animate-fade-in">
+          
+          <div class="hero-badges">
+            <span class="badge badge-red"><i class="ri-fire-fill"></i> NOW TRENDING</span>
+            <span class="badge badge-rating"><i class="ri-star-fill"></i> {{ movie.rating }} / 10</span>
+            <span class="badge badge-experience"><i class="ri-tv-line"></i> IMAX LASER</span>
+          </div>
+
+          <h1 class="hero-title">{{ movie.title }}</h1>
+
+          <div class="hero-meta">
+            <span><i class="ri-time-line"></i> {{ movie.duration }} min</span>
+            <span class="meta-dot">•</span>
+            <span><i class="ri-translate-2"></i> {{ movie.language }}</span>
+            <span class="meta-dot">•</span>
+            <span>{{ movie.genre.join(', ') }}</span>
+            <span class="meta-dot">•</span>
+            <span class="hero-price">From ₹{{ movie.ticketPrice }}</span>
+          </div>
+
+          <p class="hero-desc">{{ movie.description }}</p>
+
+          <div class="hero-cast-preview">
+            <span class="cast-label">Starring:</span>
+            <span class="cast-names">{{ movie.cast.slice(0, 3).join(', ') }}</span>
+          </div>
+
+          <div class="hero-cta-group">
+            <button (click)="bookMovie(movie)" class="btn btn-primary btn-lg" id="btn-hero-book">
+              <i class="ri-ticket-2-fill"></i> Book Tickets Now
+            </button>
+            <button (click)="openMovieDetails(movie)" class="btn btn-secondary btn-lg" id="btn-hero-details">
+              <i class="ri-information-line"></i> View Synopsis & Cast
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Hero Carousel Dots -->
+        <div class="hero-indicators">
+          @for (m of nowShowingMovies(); track m.id; let idx = $index) {
+            <button 
+              class="hero-indicator" 
+              [class.indicator-active]="idx === heroIndex()"
+              (click)="setHeroIndex(idx)"
+              [title]="m.title"
+            >
+              <span class="indicator-bar"></span>
+            </button>
+          }
+        </div>
+
+      </div>
+    </section>
+  }
+
+  <!-- ================= SEARCH & GENRE FILTER STRIP ================= -->
+  <section class="filter-strip-section">
+    <div class="container">
+      <div class="filter-bar glass-panel">
+        
+        <!-- Search Input -->
+        <div class="search-box">
+          <i class="ri-search-2-line search-icon"></i>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            placeholder="Search movie, language or genre..."
+            class="search-input"
+            id="home-search-input"
+          />
+          @if (searchQuery()) {
+            <button (click)="searchQuery.set('')" class="clear-search-btn">
+              <i class="ri-close-circle-fill"></i>
+            </button>
+          }
+        </div>
+
+        <!-- Genre Filter Chips -->
+        <div class="genre-chips-scroll">
+          @for (genre of genres; track genre) {
+            <button 
+              class="genre-chip" 
+              [class.chip-active]="selectedGenre() === genre"
+              (click)="setGenre(genre)"
+            >
+              {{ genre }}
+            </button>
+          }
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NOW SHOWING GRID ================= -->
+  <section class="movies-section container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Now Showing in Theaters</h2>
+        <p class="section-subtitle">Select your movie and choose preferred IMAX / Dolby Atmos seats</p>
+      </div>
+      <a routerLink="/movies" class="btn btn-outline btn-sm">
+        View All Movies <i class="ri-arrow-right-line"></i>
+      </a>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <i class="ri-loader-4-line spin loading-icon"></i>
+        <p>Loading available movies...</p>
+      </div>
+    } @else {
+      @if (filteredNowShowing().length === 0) {
+        <div class="empty-state glass-panel">
+          <i class="ri-movie-2-line empty-icon"></i>
+          <h3>No movies match your filter</h3>
+          <p>Try searching for a different title or resetting your genre filters.</p>
+          <button (click)="selectedGenre.set('All'); searchQuery.set('')" class="btn btn-secondary btn-sm mt-3">
+            Reset Filters
+          </button>
+        </div>
+      } @else {
+        <div class="movies-grid">
+          @for (movie of filteredNowShowing(); track movie.id) {
+            <article class="movie-card glass-panel" (click)="openMovieDetails(movie)">
+              
+              <div class="poster-container">
+                <img [src]="movie.poster" [alt]="movie.title" loading="lazy" class="movie-poster" />
+                <div class="poster-overlay">
+                  <button (click)="$event.stopPropagation(); bookMovie(movie)" class="btn btn-primary btn-sm book-overlay-btn">
+                    <i class="ri-ticket-2-fill"></i> Book Now
+                  </button>
+                  <button (click)="$event.stopPropagation(); openMovieDetails(movie)" class="btn btn-secondary btn-sm info-overlay-btn">
+                    <i class="ri-eye-line"></i> Details
+                  </button>
+                </div>
+                <div class="rating-badge-float">
+                  <i class="ri-star-fill"></i> {{ movie.rating }}
+                </div>
+              </div>
+
+              <div class="movie-info">
+                <div class="movie-meta-chips">
+                  <span class="lang-tag">{{ movie.language }}</span>
+                  <span class="duration-tag"><i class="ri-time-line"></i> {{ movie.duration }}m</span>
+                </div>
+                
+                <h3 class="movie-card-title" [title]="movie.title">{{ movie.title }}</h3>
+                <p class="movie-card-genres">{{ movie.genre.join(', ') }}</p>
+
+                <div class="movie-footer">
+                  <span class="price-tag">₹{{ movie.ticketPrice }} <small>/ seat</small></span>
+                  <button (click)="$event.stopPropagation(); bookMovie(movie)" class="card-book-btn">
+                    Book <i class="ri-arrow-right-line"></i>
+                  </button>
+                </div>
+              </div>
+
+            </article>
+          }
+        </div>
+      }
+    }
+  </section>
+
+  <!-- ================= CINEMA EXPERIENCES SHOWCASE ================= -->
+  <section class="experiences-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2 class="section-title">The CineBook Luxury Experience</h2>
+        <p class="section-subtitle">Revolutionizing movie projection, spatial sound, and comfort</p>
+      </div>
+
+      <div class="experiences-grid">
+        <div class="experience-card glass-panel">
+          <div class="exp-icon-box cyan-glow">
+            <i class="ri-tv-2-line"></i>
+          </div>
+          <h3>IMAX® with Laser</h3>
+          <p>Crystal-clear 4K dual laser projection with unprecedented brightness, deeper contrast, and vivid colors.</p>
+          <span class="exp-tag">Custom Aspect Ratio 1.43:1</span>
+        </div>
+
+        <div class="experience-card glass-panel">
+          <div class="exp-icon-box purple-glow">
+            <i class="ri-surround-sound-line"></i>
+          </div>
+          <h3>Dolby Atmos™ Sound</h3>
+          <p>64-speaker spatial multidimensional sound where every whisper, rumble, and explosion moves all around you.</p>
+          <span class="exp-tag">128 Audio Objects</span>
+        </div>
+
+        <div class="experience-card glass-panel">
+          <div class="exp-icon-box red-glow">
+            <i class="ri-rocket-line"></i>
+          </div>
+          <h3>4DX® Motion Seats</h3>
+          <p>Synchronized motion seats, atmospheric wind, scent, and environmental water effects that immerse you into the action.</p>
+          <span class="exp-tag">Dynamic Heave & Roll</span>
+        </div>
+
+        <div class="experience-card glass-panel">
+          <div class="exp-icon-box gold-glow">
+            <i class="ri-armchair-line"></i>
+          </div>
+          <h3>VIP Luxe Recliners</h3>
+          <p>Plush motorized recliners with in-seat warmers, wireless phone charging, and gourmet in-auditorium dining service.</p>
+          <span class="exp-tag">Personal Butler Call</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= COMING SOON ================= -->
+  <section class="coming-soon-section container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Upcoming Blockbusters</h2>
+        <p class="section-subtitle">Set reminders and be the first to book advance tickets</p>
+      </div>
+    </div>
+
+    <div class="coming-soon-grid">
+      @for (movie of comingSoonMovies(); track movie.id) {
+        <div class="cs-card glass-panel" (click)="openMovieDetails(movie)">
+          <div class="cs-poster-wrap">
+            <img [src]="movie.poster" [alt]="movie.title" loading="lazy" />
+            <div class="cs-date-badge">
+              <i class="ri-calendar-line"></i> {{ movie.releaseDate }}
+            </div>
+          </div>
+          <div class="cs-info">
+            <h4>{{ movie.title }}</h4>
+            <p>{{ movie.genre.join(', ') }} • {{ movie.language }}</p>
+            <span class="badge badge-experience mt-2">Advance Booking Soon</span>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ================= MOVIE DETAILS MODAL ================= -->
+  @if (activeModalMovie(); as modalMovie) {
+    <div class="modal-backdrop" (click)="closeMovieDetails()">
+      <div class="modal-card movie-modal-card glass-panel animate-fade-in" (click)="$event.stopPropagation()">
+        
+        <div class="modal-movie-banner" [style.background-image]="'linear-gradient(to top, #0f121d 10%, rgba(15,18,29,0.4) 60%, transparent), url(' + modalMovie.backdrop + ')'">
+          <button (click)="closeMovieDetails()" class="modal-close-btn float-close">
+            <i class="ri-close-line"></i>
+          </button>
+          
+          <div class="banner-bottom">
+            <span class="badge badge-rating"><i class="ri-star-fill"></i> {{ modalMovie.rating }} / 10</span>
+            <h2>{{ modalMovie.title }}</h2>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-meta-row">
+            <span><i class="ri-time-line"></i> {{ modalMovie.duration }} mins</span>
+            <span><i class="ri-translate-2"></i> {{ modalMovie.language }}</span>
+            <span><i class="ri-calendar-line"></i> Release: {{ modalMovie.releaseDate }}</span>
+            <span class="price-highlight">₹{{ modalMovie.ticketPrice }} per ticket</span>
+          </div>
+
+          <div class="modal-genres">
+            @for (g of modalMovie.genre; track g) {
+              <span class="genre-pill">{{ g }}</span>
+            }
+          </div>
+
+          <div class="modal-section">
+            <h4>Synopsis</h4>
+            <p class="modal-desc">{{ modalMovie.description }}</p>
+          </div>
+
+          <div class="modal-section">
+            <h4>Director & Cast</h4>
+            <p><strong>Director:</strong> {{ modalMovie.director }}</p>
+            <p><strong>Starring:</strong> {{ modalMovie.cast.join(', ') }}</p>
+          </div>
+
+          <div class="modal-actions-bar">
+            @if (modalMovie.status === 'now_showing') {
+              <button (click)="bookMovie(modalMovie)" class="btn btn-primary w-full">
+                <i class="ri-ticket-2-fill"></i> Choose Showtime & Book Seats
+              </button>
+            } @else {
+              <button (click)="closeMovieDetails()" class="btn btn-secondary w-full">
+                <i class="ri-notification-3-line"></i> Remind Me on Release
+              </button>
+            }
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

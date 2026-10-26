@@ -1,0 +1,56 @@
+[
+  {
+    "id": "CIN001",
+    "name": "CineBook IMAX & 4DX — Banjara Hills",
+    "city": "Hyderabad",
+    "location": "Road No. 2, Banjara Hills, Hyderabad, Telangana",
+    "screens": 6,
+    "facilities": ["IMAX Laser", "Dolby Atmos 7.1", "Recliner Seats", "Gourmet Dining", "Valet Parking"],
+    "isDemonstration": true
+  },
+  {
+    "id": "CIN002",
+    "name": "CineBook Luxe Multiplex — Hitec City",
+    "city": "Hyderabad",
+    "location": "Cyber Towers Junction, Hitec City, Hyderabad, Telangana",
+    "screens": 8,
+    "facilities": ["4K RGB Laser", "Dolby Atmos", "VIP Lounge", "In-Seat Ordering"],
+    "isDemonstration": true
+  },
+  {
+    "id": "CIN003",
+    "name": "CineBook Heritage Cinema — Abids",
+    "city": "Hyderabad",
+    "location": "Station Road, Abids, Hyderabad, Telangana",
+    "screens": 4,
+    "facilities": ["Barco 4K Projection", "Dolby Surround 5.1", "Cafeteria"],
+    "isDemonstration": true
+  },
+  {
+    "id": "CIN004",
+    "name": "CineBook Grand Arena — Koramangala",
+    "city": "Bengaluru",
+    "location": "80 Feet Road, 4th Block, Koramangala, Bengaluru, Karnataka",
+    "screens": 7,
+    "facilities": ["Dolby Atmos", "4K Projection", "Food Court", "Parking"],
+    "isDemonstration": true
+  },
+  {
+    "id": "CIN005",
+    "name": "CineBook Royale Cinema — Bandra West",
+    "city": "Mumbai",
+    "location": "Hill Road, Bandra West, Mumbai, Maharashtra",
+    "screens": 5,
+    "facilities": ["IMAX", "Dolby Atmos", "Recliners", "Snack Bar"],
+    "isDemonstration": true
+  },
+  {
+    "id": "CIN006",
+    "name": "CineBook Premier Showcase — Connaught Place",
+    "city": "Delhi",
+    "location": "Inner Circle, Block C, Connaught Place, New Delhi",
+    "screens": 6,
+    "facilities": ["Dolby Atmos", "Laser Projection", "Executive Seating"],
+    "isDemonstration": true
+  }
+]
